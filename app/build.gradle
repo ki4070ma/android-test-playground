@@ -4,6 +4,13 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+def branch_name = ""
+try {
+    branch_name = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+} catch (ignored) {
+    println "Git not found"
+}
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -20,6 +27,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "forTest"
+
+    productFlavors {
+        forTest {
+            dimension "forTest"
+            minSdkVersion '26'
+//            versionCode 30000 + android.defaultConfig.versionCode
+            versionNameSuffix "-fortest"
+        }
+
+    }
 }
 
 dependencies {
@@ -32,3 +50,4 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
