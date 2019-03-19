@@ -33,8 +33,7 @@ android {
         forTest {
             dimension "forTest"
             minSdkVersion '26'
-//            versionCode 30000 + android.defaultConfig.versionCode
-            versionNameSuffix "-fortest"
+            versionNameSuffix '-' + branch_name
         }
 
     }
