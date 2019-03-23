@@ -7,6 +7,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.lang.IllegalArgumentException
 import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.SoftAssertions
 
 @RunWith(JUnit4::class)
 class InputCheckerTest {
@@ -56,5 +57,34 @@ class InputCheckerTest {
     @Test(expected = IllegalArgumentException::class)
     fun isValid_givenNull_throwsIllegalArgumentException() {
         target.isValid(null)
+    }
+
+    @Test
+    fun testAssertionJ_String() {
+        SoftAssertions().apply {
+            assertThat("TOKYO")
+                .`as`("TEXT CHECK TOKYO")
+                .isEqualTo("TOKYO")
+//                .isEqualTo("HOKKAIDO")
+                .isEqualToIgnoringCase("tokyo")
+                .isNotEqualTo("KYOTO")
+                .isNotBlank()
+                .startsWith("TO")
+                .endsWith("YO")
+                .contains("OKY")
+                .matches("[A-Z]{5}")
+                .isInstanceOf(String::class.java)
+        }.assertAll()
+    }
+
+    @Test
+    fun testAssertionJ_Numeric() {
+        assertThat(3.14159)
+            .isNotZero()
+            .isNotNegative()
+            .isGreaterThan(3.0)
+            .isLessThanOrEqualTo(4.0)
+            .isBetween(3.0, 3.2)
+            .isCloseTo(Math.PI, within(0.001))
     }
 }
