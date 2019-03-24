@@ -11,7 +11,7 @@ class WeatherForecastTest {
     lateinit var satellite: Satellite
     lateinit var weatherForecast: WeatherForecast
     lateinit var recorder: WeatherRecorder
-    lateinit var formatter: SpyWeatherFormatter
+    lateinit var formatter: WeatherFormatter
 
     @Before
     fun setup() {
@@ -23,7 +23,7 @@ class WeatherForecastTest {
         whenever(satellite.getWeather(eq(37.792872), eq(-122.396915)))
             .thenReturn(Weather.RAINY)
         recorder = mock(name = "MockRecorder")
-        formatter = SpyWeatherFormatter()
+        formatter = spy(WeatherFormatter())
         weatherForecast = WeatherForecast(satellite, recorder, formatter)
     }
 
@@ -61,13 +61,7 @@ class WeatherForecastTest {
 
     @Test
     fun recordCurrentWeather_assertFormatterCalled() {
-        weatherForecast.recordCurrentWeather(any(), any())
-
-        val isCalled = formatter.isCalled
-        assertThat(isCalled).isTrue()
-
-        val weather = formatter.weather
-        assertThat(weather)
-            .isIn(Weather.SUNNY, Weather.CLOUDY, Weather.RAINY)
+        weatherForecast.recordCurrentWeather(37.580006, -122.345106)
+        verify(formatter, times(1)).format(any())
     }
 }
