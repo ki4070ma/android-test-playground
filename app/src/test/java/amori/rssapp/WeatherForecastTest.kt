@@ -52,7 +52,11 @@ class WeatherForecastTest {
     fun recordCurrentWeather_assertRecorderCalled() {
         weatherForecast.recordCurrentWeather(37.580006, -122.345106)
 //        verify(recorder, times(1)).record(any())
-        verify(recorder, times(1)).record(eq("Weather is SUNNY"))
+        argumentCaptor<Record>().apply {
+            verify(recorder, times(1)).record(capture())
+            assertThat(firstValue.description).isEqualTo("Weather is SUNNY")
+        }
+
     }
 
     @Test
