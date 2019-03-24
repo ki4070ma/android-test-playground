@@ -1,6 +1,7 @@
 package amori.rssapp
 
-class WeatherForecast (val satellite: Satellite) {
+class WeatherForecast (val satellite: Satellite,
+                       val recorder: WeatherRecorder) {
 
     fun shouldBringUmbrella(): Boolean {
         val weather = satellite.getWeather()
@@ -8,6 +9,11 @@ class WeatherForecast (val satellite: Satellite) {
             Weather.SUNNY, Weather.CLOUDY -> false
             Weather.RAINY -> true
         }
+    }
+
+    fun recordCurrentWeather() {
+        val weather = satellite.getWeather()
+        recorder.record(weather)
     }
 }
 
