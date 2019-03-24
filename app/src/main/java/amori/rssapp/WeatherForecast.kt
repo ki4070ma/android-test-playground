@@ -45,12 +45,6 @@ open class Satellite {
     }
 }
 
-class StubSatellite(val anyWeather: Weather): Satellite() {
-    override fun getWeather(): Weather {
-        return anyWeather
-    }
-}
-
 open class WeatherRecorder {
     open fun record(weather: String) {
         // some process

@@ -5,6 +5,8 @@ import org.junit.Test
 import org.assertj.core.api.Assertions.*
 import org.junit.Before
 
+import com.nhaarman.mockitokotlin2.*
+
 class WeatherForecastTest {
     lateinit var weatherForecast: WeatherForecast
     lateinit var recorder: MockWeatherRecorder
@@ -18,7 +20,9 @@ class WeatherForecastTest {
 
     @Test
     fun shouldBringUmbrella_givenSunny_returnsFalse() {
-        val satellite = StubSatellite(Weather.SUNNY)
+        val satellite: Satellite = mock(name = "MockSatellite")
+        whenever(satellite.getWeather()).thenReturn(Weather.SUNNY)
+
         weatherForecast = WeatherForecast(satellite, recorder, formatter)
 
         assertThat(weatherForecast.shouldBringUmbrella()).isFalse()
@@ -26,7 +30,9 @@ class WeatherForecastTest {
 
     @Test
     fun shouldBringUmbrella_givenCloudy_returnFalse() {
-        val satellite = StubSatellite(Weather.CLOUDY)
+        val satellite: Satellite = mock(name = "MockSatellite")
+        whenever(satellite.getWeather()).thenReturn(Weather.CLOUDY)
+
         weatherForecast = WeatherForecast(satellite, recorder, formatter)
 
         assertThat(weatherForecast.shouldBringUmbrella()).isFalse()
@@ -34,7 +40,9 @@ class WeatherForecastTest {
 
     @Test
     fun shouldBringUmbrella_givenRainy_returnTrue() {
-        val satellite = StubSatellite(Weather.RAINY)
+        val satellite: Satellite = mock(name = "MockSatellite")
+        whenever(satellite.getWeather()).thenReturn(Weather.RAINY)
+
         weatherForecast = WeatherForecast(satellite, recorder, formatter)
 
         assertThat(weatherForecast.shouldBringUmbrella()).isTrue()
