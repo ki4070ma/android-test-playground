@@ -8,16 +8,16 @@ class WeatherForecast (val satellite: Satellite,
                        val recorder: WeatherRecorder,
                        val formatter: WeatherFormatter) {
 
-    fun shouldBringUmbrella(): Boolean {
-        val weather = satellite.getWeather()
+    fun shouldBringUmbrella(latitude: Double, longitude: Double): Boolean {
+        val weather = satellite.getWeather(latitude, longitude)
         return when (weather) {
             Weather.SUNNY, Weather.CLOUDY -> false
             Weather.RAINY -> true
         }
     }
 
-    fun recordCurrentWeather() {
-        val weather = satellite.getWeather()
+    fun recordCurrentWeather(latitude: Double, longitude: Double) {
+        val weather = satellite.getWeather(latitude, longitude)
         val formatted = formatter.format(weather)
         recorder.record(formatted)
     }
@@ -40,7 +40,7 @@ class SpyWeatherFormatter: WeatherFormatter() {
 }
 
 open class Satellite {
-    open fun getWeather(): Weather {
+    open fun getWeather(latitude: Double, longitude: Double): Weather {
         return Weather.SUNNY  // Temp
     }
 }

@@ -8,52 +8,49 @@ import org.junit.Before
 import com.nhaarman.mockitokotlin2.*
 
 class WeatherForecastTest {
+    lateinit var satellite: Satellite
     lateinit var weatherForecast: WeatherForecast
     lateinit var recorder: MockWeatherRecorder
     lateinit var formatter: SpyWeatherFormatter
 
     @Before
     fun setup() {
+        satellite = mock(name = "MockSatellite")
+        whenever(satellite.getWeather(any(), any()))
+            .thenReturn(Weather.CLOUDY)
+        whenever(satellite.getWeather(eq(37.580006), eq(-122.345106)))
+            .thenReturn(Weather.SUNNY)
+        whenever(satellite.getWeather(eq(37.792872), eq(-122.396915)))
+            .thenReturn(Weather.RAINY)
         recorder = MockWeatherRecorder()
         formatter = SpyWeatherFormatter()
+        weatherForecast = WeatherForecast(satellite, recorder, formatter)
     }
 
     @Test
     fun shouldBringUmbrella_givenSunny_returnsFalse() {
-        val satellite: Satellite = mock(name = "MockSatellite")
-        whenever(satellite.getWeather()).thenReturn(Weather.SUNNY)
+        whenever(satellite.getWeather(any(), any())).thenReturn(Weather.SUNNY)
 
-        weatherForecast = WeatherForecast(satellite, recorder, formatter)
-
-        assertThat(weatherForecast.shouldBringUmbrella()).isFalse()
+        assertThat(weatherForecast.shouldBringUmbrella(any(), any())).isFalse()
     }
 
     @Test
     fun shouldBringUmbrella_givenCloudy_returnFalse() {
-        val satellite: Satellite = mock(name = "MockSatellite")
-        whenever(satellite.getWeather()).thenReturn(Weather.CLOUDY)
+        whenever(satellite.getWeather(any(), any())).thenReturn(Weather.CLOUDY)
 
-        weatherForecast = WeatherForecast(satellite, recorder, formatter)
-
-        assertThat(weatherForecast.shouldBringUmbrella()).isFalse()
+        assertThat(weatherForecast.shouldBringUmbrella(any(), any())).isFalse()
     }
 
     @Test
     fun shouldBringUmbrella_givenRainy_returnTrue() {
-        val satellite: Satellite = mock(name = "MockSatellite")
-        whenever(satellite.getWeather()).thenReturn(Weather.RAINY)
+        whenever(satellite.getWeather(any(), any())).thenReturn(Weather.RAINY)
 
-        weatherForecast = WeatherForecast(satellite, recorder, formatter)
-
-        assertThat(weatherForecast.shouldBringUmbrella()).isTrue()
+        assertThat(weatherForecast.shouldBringUmbrella(any(), any())).isTrue()
     }
 
     @Test
     fun recordCurrentWeather_assertCalled() {
-        val satellite = Satellite()
-        weatherForecast = WeatherForecast(satellite, recorder, formatter)
-
-        weatherForecast.recordCurrentWeather()
+        weatherForecast.recordCurrentWeather(any(), any())
 
         val isCalled = recorder.isCalled
         assertThat(isCalled).isTrue()
@@ -66,10 +63,7 @@ class WeatherForecastTest {
 
     @Test
     fun recordCurrentWeather_assertFormatterCalled() {
-        val satellite = Satellite()
-        weatherForecast = WeatherForecast(satellite, recorder, formatter)
-
-        weatherForecast.recordCurrentWeather()
+        weatherForecast.recordCurrentWeather(any(), any())
 
         val isCalled = formatter.isCalled
         assertThat(isCalled).isTrue()
