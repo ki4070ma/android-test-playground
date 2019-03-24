@@ -60,6 +60,14 @@ class InputCheckerTest {
     }
 
     @Test
+    fun isValid_givenNull_throwsIllegalArgumentException_AssertionJ() {
+        assertThatExceptionOfType(IllegalArgumentException::class.java)
+            .isThrownBy { target.isValid(null) }
+            .withMessage("Cannot be null")
+            .withNoCause()
+    }
+
+    @Test
     fun testAssertionJ_String() {
         SoftAssertions().apply {
             assertThat("TOKYO")
@@ -86,5 +94,44 @@ class InputCheckerTest {
             .isLessThanOrEqualTo(4.0)
             .isBetween(3.0, 3.2)
             .isCloseTo(Math.PI, within(0.001))
+    }
+
+    @Test
+    fun testAssertionJ_List() {
+        val target = listOf("Giants", "Dodgers", "Athletics")
+
+        assertThat(target)
+            .hasSize(3)
+            .contains("Dodgers")
+            .containsOnly("Athletics", "Dodgers", "Giants")
+            .containsExactly("Giants", "Dodgers", "Athletics")
+            .doesNotContain("Padres")
+    }
+
+    @Test
+    fun testAssertionJ_FilterTuple() {
+        data class BallTeam(val name: String, val city: String, val stadium: String)
+
+        val target = listOf(
+            BallTeam("Giants", "San Francisco", "AT&T Park"),
+            BallTeam("Dodgers", "Los Angels", "Dodger Stadium"),
+            BallTeam("Angels", "Los Angels", "Angel Stadium"),
+            BallTeam("Athletics", "Oakland", "Oakland Coliseum"),
+            BallTeam("Padres", "San Diego", "Petco Park")
+        )
+
+        assertThat(target)
+            .filteredOn { team -> team.city.startsWith("San") }
+            .filteredOn { team -> team.city.endsWith("Francisco")}
+            .extracting("name", String::class.java)
+
+        assertThat(target)
+            .filteredOn {team -> team.city == "Los Angels"}
+            .extracting("name", "stadium")
+            .containsExactly(
+                tuple("Dodgers", "Dodger Stadium"),
+                tuple("Angels", "Angel Stadium")
+            )
+
     }
 }
