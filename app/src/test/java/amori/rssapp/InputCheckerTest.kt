@@ -4,12 +4,16 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+//import org.junit.runners.JUnit4
 import java.lang.IllegalArgumentException
 import org.assertj.core.api.Assertions.*
 import org.assertj.core.api.SoftAssertions
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
-@RunWith(JUnit4::class)
+//@RunWith(JUnit4::class)
+@Config(minSdk = 26, maxSdk = 27)
+@RunWith(RobolectricTestRunner::class)
 class InputCheckerTest {
 
     lateinit var target: InputChecker
@@ -56,13 +60,13 @@ class InputCheckerTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun isValid_givenNull_throwsIllegalArgumentException() {
-        target.isValid(null)
+        target.isValid("")
     }
 
     @Test
     fun isValid_givenNull_throwsIllegalArgumentException_AssertionJ() {
         assertThatExceptionOfType(IllegalArgumentException::class.java)
-            .isThrownBy { target.isValid(null) }
+            .isThrownBy { target.isValid("") }
             .withMessage("Cannot be null")
             .withNoCause()
     }
