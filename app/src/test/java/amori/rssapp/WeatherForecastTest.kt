@@ -14,4 +14,21 @@ class WeatherForecastTest {
 
         assertThat(weatherForecast.shouldBringUmbrella()).isFalse()
     }
+
+    @Test
+    fun shouldBringUmbrella_givenCloudy_returnFalse() {
+        val satellite = StubSatellite(Weather.CLOUDY)
+        weatherForecast = WeatherForecast(satellite)
+
+        assertThat(weatherForecast.shouldBringUmbrella()).isFalse()
+    }
+
+    @Test
+    fun shouldBringUmbrella_givenRainy_returnTrue() {
+        val satellite = StubSatellite(Weather.RAINY)
+        weatherForecast = WeatherForecast(satellite)
+
+        assertThat(weatherForecast.shouldBringUmbrella()).isTrue()
+    }
+
 }
