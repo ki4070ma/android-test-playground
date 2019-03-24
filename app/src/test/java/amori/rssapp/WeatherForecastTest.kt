@@ -10,7 +10,7 @@ import com.nhaarman.mockitokotlin2.*
 class WeatherForecastTest {
     lateinit var satellite: Satellite
     lateinit var weatherForecast: WeatherForecast
-    lateinit var recorder: MockWeatherRecorder
+    lateinit var recorder: WeatherRecorder
     lateinit var formatter: SpyWeatherFormatter
 
     @Before
@@ -22,7 +22,7 @@ class WeatherForecastTest {
             .thenReturn(Weather.SUNNY)
         whenever(satellite.getWeather(eq(37.792872), eq(-122.396915)))
             .thenReturn(Weather.RAINY)
-        recorder = MockWeatherRecorder()
+        recorder = mock(name = "MockRecorder")
         formatter = SpyWeatherFormatter()
         weatherForecast = WeatherForecast(satellite, recorder, formatter)
     }
@@ -49,16 +49,10 @@ class WeatherForecastTest {
     }
 
     @Test
-    fun recordCurrentWeather_assertCalled() {
-        weatherForecast.recordCurrentWeather(any(), any())
-
-        val isCalled = recorder.isCalled
-        assertThat(isCalled).isTrue()
-
-        val weather = recorder.weather
-        assertThat(weather)
-            .contains("Weather is")
-            // TODO contains either Weather.SONNY/CLOUDY/RAINY
+    fun recordCurrentWeather_assertRecorderCalled() {
+        weatherForecast.recordCurrentWeather(37.580006, -122.345106)
+//        verify(recorder, times(1)).record(any())
+        verify(recorder, times(1)).record(eq("Weather is SUNNY"))
     }
 
     @Test
